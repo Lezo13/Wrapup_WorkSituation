@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Day in the Life: A Work Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: #4a5568;
+            margin-bottom: 32px;
+        }
+
+        .scores {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .score-card {
+            background-color: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .score-card h3 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .score-card.increase {
+            background-color: #d1fae5;
+        }
+
+        .score-card.decrease {
+            background-color: #fee2e2;
+        }
+
+        .story-box {
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .story-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 24px;
+        }
+
+        .story-image {
+            width: auto;
+            height: 350px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .choice-button {
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+        }
+
+        .choice-button.enabled {
+            background-color: #6366f1;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-button.enabled:hover {
+            background-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .choice-button.disabled {
+            background-color: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .cost-label {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #cbd5e0;
+            margin-left: 12px;
+        }
+
+        .cost-label strong {
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .final-message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #16a34a;
+        }
+
+        .summary-message {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #4a5568;
+            text-align: left;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .scores {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-6">
+    <div class="container bg-white rounded-2xl shadow-2xl p-12 max-w-4xl w-full">
+        <div class="header text-center">
+            <h1 class="text-5xl font-extrabold text-gray-900">A Day in the Life: A Work Adventure</h1>
+            <p class="text-xl text-gray-600 mt-2">Navigate the challenges of a busy day at the office</p>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="scores">
+            <div id="productivity" class="score-card text-center bg-blue-50 border-blue-200">
+                <h3 class="text-blue-800">Productivity</h3>
+                <div class="score-value text-blue-600">10</div>
+            </div>
+            <div id="stress" class="score-card text-center bg-red-50 border-red-200">
+                <h3 class="text-red-800">Stress</h3>
+                <div class="score-value text-red-600">5</div>
+            </div>
+            <div id="networking" class="score-card text-center bg-purple-50 border-purple-200">
+                <h3 class="text-purple-800">Networking</h3>
+                <div class="score-value text-purple-600">10</div>
+            </div>
+            <div id="creativity" class="score-card text-center bg-yellow-50 border-yellow-200">
+                <h3 class="text-yellow-800">Creativity</h3>
+                <div class="score-value text-yellow-600">10</div>
+            </div>
+        </div>
+
+        <!-- Story Area -->
+        <div class="game-area mt-8">
+            <div id="storyBox" class="story-box">
+                <img id="storyImage" class="story-image"
+                    src="https://i.imgur.com/jWhg10F.png"
+                    alt="A starting image of an office.">
+                <p id="storyText" class="text-2xl text-gray-700 font-semibold mb-6">It's Monday morning. You've just
+                    arrived at your desk. You have a few emails to read, a coffee to grab, and a major project to
+                    tackle. How do you start your day?</p>
+                <div id="choiceButtons" class="choice-buttons">
+                    <button id="startButton" class="enabled choice-button" onclick="startGame()">Begin the
+                        Adventure</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let resources = {};
+            let storyLog = [];
+            let showingConsequence = false;
+            let nextScenarioIndex = 0;
+
+            const scenarios = [
+                // Scenario 1: Morning Tasks (4 choices)
+                {
+                    text: "It's Monday morning. You've just arrived at your desk. You have a few emails to read, a coffee to grab, and a major project to tackle. How do you start your day?",
+                    image: "https://i.imgur.com/jWhg10F.png",
+                    choices: [
+                        {
+                            text: "Dive straight into the major project. You want to get it done while you're fresh.",
+                            costs: { productivity: 3, stress: 2, networking: -1, creativity: -1 },
+                            consequence: "You made significant progress on the project, boosting your Productivity. The focus was intense, which raised your Stress. You didn't get a chance to interact with anyone.",
+                            consequenceImage: "https://i.imgur.com/3sm21pX.png"
+                        },
+                        {
+                            text: "Catch up on emails and plan your day. A little organization goes a long way.",
+                            costs: { productivity: 1, stress: 0, networking: 0, creativity: 0 },
+                            consequence: "You organized your inbox and created a solid plan. Your Productivity got a small boost, and your Stress remained low. You feel prepared for the day ahead.",
+                            consequenceImage: "https://i.imgur.com/5qxK7ws.png"
+                        },
+                        {
+                            text: "Grab a coffee and chat with a colleague. It's good for morale and a great way to ease into the day.",
+                            costs: { productivity: -1, stress: -1, networking: 2, creativity: 1 },
+                            consequence: "You had a great conversation over coffee. Your Networking and Creativity got a nice bump, and your Stress went down. However, you lost a bit of time, which slightly impacted your Productivity.",
+                            consequenceImage: "https://i.imgur.com/Yx4JxEH.png"
+                        },
+                        {
+                            text: "Attend an unscheduled brief meeting a colleague mentioned.",
+                            costs: { productivity: -2, stress: 1, networking: 3, creativity: 1 },
+                            consequence: "The meeting wasn't on your calendar, but you attended anyway. It cost you some productivity and caused a little stress, but you made a valuable new connection, which was a win for networking.",
+                            consequenceImage: "https://i.imgur.com/v4KQCGD.png"
+                        }
+                    ]
+                },
+                // Scenario 2: Project Deadline (4 choices)
+                {
+                    text: "You have a major project due by the end of the day. A key part of the project requires a creative solution you haven't thought of yet. Do you brainstorm with your team, search for existing solutions, or push through it alone?",
+                    image: "https://i.imgur.com/3kOPjSg.png",
+                    choices: [
+                        {
+                            text: "Brainstorm with your team. Two heads are better than one.",
+                            costs: { productivity: 2, stress: -2, networking: 2, creativity: 3 },
+                            consequence: "The team session was a huge success. You found a brilliant solution, increasing your Productivity and Creativity. Your Stress decreased, and you strengthened your team bonds.",
+                            consequenceImage: "https://i.imgur.com/NL6cWIf.png"
+                        },
+                        {
+                            text: "Search online for existing solutions and adapt them. Why reinvent the wheel?",
+                            costs: { productivity: 3, stress: -1, networking: 0, creativity: 1 },
+                            consequence: "You found a great template online and adapted it. This was a highly productive approach, and you finished the task with a little less stress. Your Creativity saw a small gain from the adaptation.",
+                            consequenceImage: "https://i.imgur.com/aM7mC0A.png"
+                        },
+                        {
+                            text: "Push through it alone. You're the best person for the job, and you want to take full credit.",
+                            costs: { productivity: 2, stress: 3, networking: -2, creativity: 2 },
+                            consequence: "You eventually solved the problem, but it was a struggle. Your Productivity and Creativity went up, but so did your Stress. Your solo effort did nothing for your Networking.",
+                            consequenceImage: "https://i.imgur.com/lwswjtq.png"
+                        },
+                        {
+                            text: "Take a short break to walk around and clear your head.",
+                            costs: { productivity: -1, stress: -3, networking: 0, creativity: 2 },
+                            consequence: "A short break helped you de-stress and sparked a new idea. While your productivity took a small hit from the time away, your renewed creativity and low stress levels are a good trade-off.",
+                            consequenceImage: "https://i.imgur.com/nsfzPgE.png"
+                        }
+                    ]
+                },
+                // Scenario 3: Team Meeting (4 choices)
+                {
+                    text: "You are in a weekly team meeting. It’s dragging on and people are getting off-topic. You have an important task to get back to. What do you do?",
+                    image: "https://i.imgur.com/A2v3g2U.png",
+                    choices: [
+                        {
+                            text: "Politely interrupt and steer the conversation back to the agenda.",
+                            costs: { productivity: 2, stress: -1, networking: 1, creativity: 0 },
+                            consequence: "You helped the team get back on track. Your Productivity and Networking received a boost, and the meeting ended on time. Everyone appreciated the efficiency. Your stress is at a good level.",
+                            consequenceImage: "https://i.imgur.com/cdKtQa4.png"
+                        },
+                        {
+                            text: "Stay quiet and work on your own tasks. You can catch up on the meeting summary later.",
+                            costs: { productivity: 3, stress: 1, networking: -2, creativity: 0 },
+                            consequence: "You got a lot done, which significantly boosted your Productivity. However, you missed out on some of the discussion and your Networking took a hit. You feel a bit more stressed from the multitasking.",
+                            consequenceImage: "https://i.imgur.com/VaVrL3n.png"
+                        },
+                        {
+                            text: "Suggest a 5-minute 'creativity break' with some team-building exercises.",
+                            costs: { productivity: -1, stress: -2, networking: 3, creativity: 2 },
+                            consequence: "The break was a success. The team laughed and bonded, boosting your Networking and Creativity. The meeting was a little longer, so your Productivity dropped, but everyone feels refreshed and in a better mood.",
+                            consequenceImage: "https://i.imgur.com/WOo0ojG.png"
+                        },
+                        {
+                            text: "Politely suggest a separate, follow-up meeting for the off-topic discussions.",
+                            costs: { productivity: 2, stress: 0, networking: 2, creativity: 0 },
+                            consequence: "You made a smart suggestion that both ended the current meeting efficiently and kept the important discussion alive. Your team appreciated the proactive approach, boosting both your productivity and networking.",
+                            consequenceImage: "https://i.imgur.com/SgANSz5.png"
+                        }
+                    ]
+                },
+                // Scenario 4: An Unexpected Problem (4 choices)
+                {
+                    text: "A critical piece of software you rely on has crashed, and you have no idea how to fix it. Your project is now stalled. You're feeling frustrated and stressed. What's your next move?",
+                    image: "https://i.imgur.com/tpdoxZ2.png",
+                    choices: [
+                        {
+                            text: "Try to fix it yourself, even though you don't know the system well. You're a problem solver!",
+                            costs: { productivity: -2, stress: 3, networking: 0, creativity: 1 },
+                            consequence: "Your attempt to fix the problem failed, and now you are a lot more stressed. Your Productivity is down, but your efforts to try and solve the problem on your own have given you a small boost of Creativity. You have a feeling that this will be a story of great challenge.",
+                            consequenceImage: "https://i.imgur.com/lUhA5jn.png"
+                        },
+                        {
+                            text: "Call the IT expert you met last week. They owe you a favor.",
+                            costs: { productivity: 3, stress: -2, networking: 1, creativity: 0 },
+                            consequence: "Your contact helped you fix the system quickly. Your Productivity is now back on track, and your Stress is much lower. Your Networking proved its value today. This was a story of a great success!",
+                            consequenceImage: "https://i.imgur.com/gWltZ8E_d.webp?maxwidth=760&fidelity=grand"
+                        },
+                        {
+                            text: "Document the issue and notify your manager. It's out of your hands.",
+                            costs: { productivity: 1, stress: -1, networking: -1, creativity: 0 },
+                            consequence: "You did the responsible thing and documented the problem. Your Productivity has a small gain from the documentation, and your Stress is low because you're no longer responsible for the issue. However, you did not get to interact with anyone, and your Networking took a hit.",
+                            consequenceImage: "https://i.imgur.com/sYBVUMj.png"
+                        },
+                        {
+                            text: "Ask a different colleague for a fresh perspective, even if they aren't an expert.",
+                            costs: { productivity: -1, stress: -1, networking: 2, creativity: 1 },
+                            consequence: "Talking to a different colleague gave you a new way to think about the problem. While they couldn't fix it directly, the conversation boosted your networking and gave you a creative idea to try next, lowering your stress a bit.",
+                            consequenceImage: "https://i.imgur.com/mcIS9jT.png"
+                        }
+                    ]
+                },
+                // Scenario 5: End of Day (4 choices)
+                {
+                    text: "It's 5 PM. Your day is almost over. A colleague suggests going to a happy hour event with a few people from other departments. You could also leave on time and go for a walk to de-stress. Or, you could stay late to get ahead on tomorrow's tasks.",
+                    image: "https://i.imgur.com/CRM8O8s.png",
+                    choices: [
+                        {
+                            text: "Go to the happy hour. It's a great chance to network.",
+                            costs: { productivity: -1, stress: -2, networking: 3, creativity: 1 },
+                            consequence: "You had a great time at happy hour, meeting new people and building connections. Your Networking and Creativity are way up, and your Stress is low. However, you didn't get any extra work done.",
+                            consequenceImage: "https://i.imgur.com/0t4eszM.png"
+                        },
+                        {
+                            text: "Go for a walk to de-stress and clear your head.",
+                            costs: { productivity: 0, stress: -3, networking: 0, creativity: 2 },
+                            consequence: "The walk was exactly what you needed. Your Stress is now very low, and your Creativity got a boost from the change of scenery. You didn't gain or lose anything in Productivity or Networking.",
+                            consequenceImage: "https://i.imgur.com/wNbN3X7.png"
+                        },
+                        {
+                            text: "Stay late to get ahead on tomorrow's tasks. You want to be a top performer.",
+                            costs: { productivity: 3, stress: 2, networking: -1, creativity: -1 },
+                            consequence: "You stayed late and got a head start on tomorrow's tasks. Your Productivity is high, but your Stress has increased, and you missed a chance to socialize. This was a story of great challenge and a lesson in what to avoid.",
+                            consequenceImage: "https://i.imgur.com/pgiLqKg.png"
+                        },
+                        {
+                            text: "Finish a personal side-project you've been working on.",
+                            costs: { productivity: 2, stress: 1, networking: -1, creativity: 3 },
+                            consequence: "You decided to work on your own project. It gave you a sense of accomplishment and boosted your creativity, but it increased your stress slightly and you missed a networking opportunity. You're feeling productive but a bit drained.",
+                            consequenceImage: "https://i.imgur.com/lA7ogrM.png"
+                        }
+                    ]
+                }
+            ];
+
+            const endings = {
+                success: {
+                    text: "You navigated the day like a true professional. With high productivity, low stress, and great connections, you're on the fast track to success. You've truly mastered the art of the work-life balance!",
+                    image: "https://i.imgur.com/jVnJ7Q3_d.webp?maxwidth=760&fidelity=grand"
+                },
+                balanced: {
+                    text: "Your day was a mix of highs and lows. You got some important things done and learned a lot, but you have some room for improvement. You survived the day, and you're ready to tackle the next challenge with a fresh perspective.",
+                    image: "https://i.imgur.com/4ja80ug.png"
+                },
+                failure: {
+                    text: "The day was a disaster. You're burned out, your projects are stalled, and your reputation has taken a hit. It seems like you bit off more than you could chew. This was a story of great challenge and a lesson in what not to do. Maybe tomorrow will be better.",
+                    image: "https://i.imgur.com/xTdR4dQ.png"
+                }
+            };
+
+            const scoreElements = {
+                productivity: document.getElementById('productivity').querySelector('.score-value'),
+                stress: document.getElementById('stress').querySelector('.score-value'),
+                networking: document.getElementById('networking').querySelector('.score-value'),
+                creativity: document.getElementById('creativity').querySelector('.score-value')
+            };
+
+            const scoreCardElements = {
+                productivity: document.getElementById('productivity'),
+                stress: document.getElementById('stress'),
+                networking: document.getElementById('networking'),
+                creativity: document.getElementById('creativity')
+            };
+
+            const storyTextElement = document.getElementById('storyText');
+            const storyImageElement = document.getElementById('storyImage');
+            const choiceButtonsContainer = document.getElementById('choiceButtons');
+
+            /**
+             * Renders the current state of the game.
+             */
+            function renderGame() {
+                // Update scores
+                for (const key in resources) {
+                    scoreElements[key].textContent = resources[key];
+                }
+
+                // If all scenarios are done, display the ending.
+                if (nextScenarioIndex >= scenarios.length) {
+                    displayEnding();
+                    return;
+                }
+
+                // If a consequence is being shown, hide buttons and wait for a click.
+                if (showingConsequence) {
+                    choiceButtonsContainer.innerHTML = `<button class="enabled choice-button" onclick="continueStory()">Continue</button>`;
+                    return;
+                }
+
+                const scenario = scenarios[nextScenarioIndex];
+                storyTextElement.textContent = scenario.text;
+                storyImageElement.src = scenario.image; // Update the image
+                choiceButtonsContainer.innerHTML = ''; // Clear previous buttons
+
+                let anyChoicesEnabled = false;
+
+                scenario.choices.forEach((choice) => {
+                    const button = document.createElement('button');
+                    button.classList.add('choice-button', 'text-sm', 'sm:text-base');
+                    button.innerHTML = `${choice.text} <span class="cost-label">Costs: ${formatCosts(choice.costs)}</span>`;
+
+                    const canAfford = Object.keys(choice.costs).every(costType => resources[costType] >= -choice.costs[costType]);
+                    if (canAfford) {
+                        button.classList.add('enabled');
+                        button.onclick = () => handleChoice(choice);
+                        anyChoicesEnabled = true;
+                    } else {
+                        button.classList.add('disabled');
+                        button.disabled = true;
+                    }
+                    choiceButtonsContainer.appendChild(button);
+                });
+
+                // If no choices are available, add a new button to end the game.
+                if (!anyChoicesEnabled) {
+                    const endGameButton = document.createElement('button');
+                    endGameButton.classList.add('choice-button', 'enabled', 'bg-red-500', 'hover:bg-red-600', 'text-white');
+                    endGameButton.textContent = 'End Day Early';
+                    endGameButton.onclick = endGameEarly;
+                    choiceButtonsContainer.appendChild(endGameButton);
+                }
+            }
+
+            /**
+             * Formats the cost/gain object into a readable string.
+             */
+            function formatCosts(costs) {
+                return Object.entries(costs).map(([key, value]) => {
+                    const sign = value > 0 ? '+' : '';
+                    return `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}: ${sign}${value}</strong>`;
+                }).join(', ');
+            }
+
+            /**
+             * Handles a player's choice, updating resources and moving to the next scenario.
+             */
+            function handleChoice(choice) {
+                // Apply the resource costs/gains
+                for (const key in choice.costs) {
+                    const oldValue = resources[key];
+                    resources[key] += choice.costs[key];
+
+                    // Add visual feedback
+                    if (choice.costs[key] !== 0) {
+                        scoreCardElements[key].classList.add(choice.costs[key] < 0 ? 'decrease' : 'increase');
+                        setTimeout(() => {
+                            scoreCardElements[key].classList.remove('decrease', 'increase');
+                        }, 500);
+                    }
+                }
+
+                // Store the consequence in the story log
+                storyLog.push(choice.consequence);
+
+                // Show the consequence text and image.
+                storyTextElement.textContent = choice.consequence;
+                storyImageElement.src = choice.consequenceImage; // Update the image
+                showingConsequence = true;
+                nextScenarioIndex++;
+                renderGame();
+            }
+
+            /**
+             * Continues the story after a consequence has been shown.
+             */
+            function continueStory() {
+                showingConsequence = false;
+                renderGame();
+            }
+
+            /**
+             * Displays the final ending of the story based on resources and past choices.
+             */
+            function displayEnding() {
+                let ending = null;
+                const totalScore = resources.productivity + (20 - resources.stress) + resources.networking + resources.creativity;
+
+                // Determine the ending message and image
+                if (totalScore >= 50 && resources.stress < 15) {
+                    ending = endings.success;
+                    storyTextElement.classList.add('final-message', 'text-green-600');
+                } else if (totalScore >= 30) {
+                    ending = endings.balanced;
+                    storyTextElement.classList.add('final-message', 'text-orange-600');
+                } else {
+                    ending = endings.failure;
+                    storyTextElement.classList.add('final-message', 'text-red-600');
+                }
+
+                // Create a full story summary with line breaks for separation
+                const fullStory = `Your work day began with the challenges of Monday morning. Your choices led you to the following outcomes: ${storyLog.join(' ')}<br><br>In the end, your day concluded with this final outcome: ${ending.text}`;
+
+                // Use innerHTML to render the line breaks correctly
+                storyTextElement.innerHTML = fullStory;
+                storyImageElement.src = ending.image; // Update the image for the ending
+                storyTextElement.classList.remove('text-2xl', 'font-semibold');
+                storyTextElement.classList.add('summary-message');
+                choiceButtonsContainer.innerHTML = `<button class="enabled choice-button" onclick="startGame()">Play Again</button>`;
+            }
+
+            /**
+             * Jumps to the end of the game when the player cannot make any more choices.
+             */
+            function endGameEarly() {
+                storyLog.push("You couldn't afford any more choices and had to end your day early, missing out on the final activities.");
+                nextScenarioIndex = scenarios.length;
+                renderGame();
+            }
+
+            /**
+             * Initializes the game.
+             */
+            function startGame() {
+                nextScenarioIndex = 0;
+                showingConsequence = false;
+                storyLog = []; // Reset the story log
+                resources = {
+                    productivity: 10,
+                    stress: 5,
+                    networking: 10,
+                    creativity: 10
+                };
+                storyTextElement.classList.remove('final-message', 'text-green-600', 'text-orange-600', 'text-red-600', 'summary-message');
+                storyTextElement.classList.add('text-2xl', 'font-semibold');
+                renderGame();
+            }
+        </script>
+    </div>
+</body>
+
+</html>

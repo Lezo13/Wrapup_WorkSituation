@@ -147,14 +147,34 @@
         }
 
         .cost-label {
+            display: block;
             font-size: 0.875rem;
             font-weight: 400;
             color: #cbd5e0;
-            margin-left: 12px;
         }
 
         .cost-label strong {
             color: #f7f3b4;
+            font-weight: 600;
+        }
+
+        .cost-label strong.cost-positive {
+            color: #adff71;
+            font-weight: 600;
+        }
+
+        .cost-label strong.cost-negative {
+            color: #f99b96;
+            font-weight: 600;
+        }
+
+        button:disabled .cost-label {
+            color: #a1a1a1 !important;
+            font-weight: 600;
+        }
+
+        button:disabled .cost-label strong {
+            color: #b8b8b8 !important;
             font-weight: 600;
         }
 
@@ -211,8 +231,7 @@
         <!-- Story Area -->
         <div class="game-area mt-8">
             <div id="storyBox" class="story-box">
-                <img id="storyImage" class="story-image"
-                    src="https://i.imgur.com/jWhg10F.png"
+                <img id="storyImage" class="story-image" src="https://i.imgur.com/jWhg10F.png"
                     alt="A starting image of an office.">
                 <p id="storyText" class="text-2xl text-gray-700 font-semibold mb-6">It's Monday morning. You've just
                     arrived at your desk. You have a few emails to read, a coffee to grab, and a major project to
@@ -481,8 +500,16 @@
              */
             function formatCosts(costs) {
                 return Object.entries(costs).map(([key, value]) => {
+                    let costClass = '';
                     const sign = value > 0 ? '+' : '';
-                    return `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}: ${sign}${value}</strong>`;
+
+                    if (value > 0)
+                        costClass = 'cost-positive';
+                    else if (value < 0)
+                        costClass = 'cost-negative';
+
+                    const classAttr = costClass.length > 0 ? ` class='${costClass}'` : '';
+                    return `<strong${classAttr}>${key.charAt(0).toUpperCase() + key.slice(1)}: ${sign}${value}</strong>`;
                 }).join(', ');
             }
 
